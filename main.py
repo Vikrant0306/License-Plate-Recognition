@@ -45,4 +45,20 @@ if license_plate_contour is not None:
     cv2.waitKey(2000)  # Display for 2 seconds
     cv2.destroyAllWindows()
 
-pytesseract.pytesseract.tesseract_cmd = r'"C:\Program Files\Tesseract-OCR\tesseract.exe"'
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
+
+if license_plate_contour is not None:
+    # Extract the license plate area as before
+    x, y, w, h = cv2.boundingRect(license_plate_contour)
+    license_plate = gray_image[y:y+h, x:x+w]
+
+    # Perform OCR on the cropped license plate
+    text = pytesseract.image_to_string(license_plate, config='--psm 8')
+    print("Detected License Plate Number:", text.strip())
+
+    # Optionally, display the extracted text on the image
+    cv2.putText(image, text.strip(), (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+    cv2.imshow('License Plate with Text', image)
+    cv2.waitKey(2000)  # Display for 2 seconds
+    cv2.destroyAllWindows()
